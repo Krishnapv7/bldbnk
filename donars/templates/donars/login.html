@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* Login Container */
+        .login-container {
+            background-color: #f8f8f8;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            text-align: center;
+        }
+
+        .login-container h2 {
+            color: #d32f2f;
+            margin-bottom: 20px;
+        }
+
+        /* Form Styles */
+        .login-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .login-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-form button:hover {
+            background-color: #b71c1c;
+        }
+
+        /* Icon Styles */
+        .icon {
+            font-size: 50px;
+            color: #d32f2f;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <i class="fas fa-user-shield icon"></i>
+        <h2>Admin Login</h2>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="error-message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="👤 Username" required>
+            <input type="password" name="password" placeholder="🔒 Password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+    <script>
+        // Show the error message if present
+        document.addEventListener("DOMContentLoaded", function() {
+            const errorMessage = document.querySelector(".error-message");
+            if (errorMessage) {
+                errorMessage.style.display = "block";
+            }
+        });
+    </script>
+
+</body>
+</html>

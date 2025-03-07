@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donors of {{ blood_group }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #d32f2f;
+            padding: 15px 20px;
+            color: white;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-buttons a {
+            background-color: white;
+            color: #d32f2f;
+            border: 2px solid #d32f2f;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .header-buttons a:hover {
+            background-color: #b71c1c;
+            color: white;
+        }
+
+        /* Table Container */
+        .container {
+            max-width: 90%;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 10px;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            color: #d32f2f;
+        }
+
+        /* Table Styling */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            margin-top: 20px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #d32f2f;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Action Links */
+        .action-links {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-links a {
+            text-decoration: none;
+            color: white;
+            padding: 8px 12px;
+            margin: 0 5px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .edit {
+            background-color: #388e3c;
+        }
+
+        .edit:hover {
+            background-color: #2e7d32;
+        }
+
+        .delete {
+            background-color: #d32f2f;
+        }
+
+        .delete:hover {
+            background-color: #b71c1c;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .header-buttons {
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 10px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+            /* No Donors Found */
+            .no-donors {
+                color: #d32f2f;
+                font-weight: bold;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">🩸 DYFI Blood Bank</div>
+        <div class="header-buttons">
+            <a href="{% url 'dashboard' %}">⬅ Back to Dashboard</a>
+            <a href="{% url 'add_donor' %}">➕ Add Donor</a>
+        </div>
+    </div>
+
+    <!-- Donor List -->
+    <div class="container">
+        <h2>Donors of Blood Group {{ blood_group }}</h2>
+        <div class="table-container">
+            {% if donors %}
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>Last Donation Date</th>
+                    <th>Actions</th>
+                </tr>
+                {% for donor in donors %}
+                <tr>
+                    <td>{{ donor.name }}</td>
+                    <td>{{ donor.phone_number }}</td>
+                    <td>{{ donor.address }}</td>
+                    <td>{{ donor.last_donation_date }}</td>
+                    <td class="action-links">
+                        <a href="{% url 'edit_donor' donor.id %}" class="edit">✏ Edit</a>
+                        <a href="{% url 'delete_donor' donor.id %}" class="delete" 
+                        onclick="return confirm('Are you sure you want to delete {{ donor.name }}?')">
+                        🗑 Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <p class="no-donors">No donors found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>
