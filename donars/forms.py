@@ -16,7 +16,8 @@ class DonorForm(forms.ModelForm):
     
     def clean_phone_number(self):
         phone_number = self.cleaned_data.get("phone_number")
-        if Donor.objects.filter(phone_number=phone_number).exists():
+        donor_id = self.instance.id
+        if Donor.objects.filter(phone_number=phone_number).exclude(id=donor_id).exists():
             raise forms.ValidationError("A donor with this phone number already exists.")
         return phone_number
 

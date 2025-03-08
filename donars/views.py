@@ -117,7 +117,7 @@ def edit_donor(request, donor_id):
             return redirect('donor_list', blood_group=donor.blood_group)
     else:
         form = DonorForm(instance=donor)
-    return render(request, 'donars/edit_donar.html', {'form': form})
+    return render(request, 'donars/edit_donar.html', {'form': form,'donor': donor})
 
 
 @login_required
