@@ -122,6 +122,39 @@
             .logo {
                 margin-bottom: 10px; /* Space between logo and button */
             }
+            .message-container {
+                width: 50%;
+                margin: 20px auto;
+                text-align: center;
+            }
+            
+            /* Success Message */
+            .success-message {
+                background-color: #d4edda;
+                color: #155724;
+                padding: 10px;
+                border-radius: 5px;
+                border: 1px solid #c3e6cb;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                font-weight: bold;
+            }
+            
+            /* Error Message */
+            .error-message {
+                background-color: #f8d7da;
+                color: #721c24;
+                padding: 10px;
+                border-radius: 5px;
+                border: 1px solid #f5c6cb;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                font-weight: bold;
+            }
         
         }
     </style>
@@ -131,7 +164,8 @@
     <div class="message-container">
         {% for message in messages %}
         <div class="{% if message.tags == 'error' %}error-message{% else %}success-message{% endif %}">
-            <i class="fas fa-check-circle"></i> {{ message }}
+            <i class="{% if message.tags == 'error' %}fas fa-times-circle{% else %}fas fa-check-circle{% endif %}"></i>
+            {{ message }}
         </div>
         {% endfor %}
     </div>

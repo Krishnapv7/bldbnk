@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Requests</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+    
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #d32f2f;
+            padding: 15px 20px;
+            color: white;
+        }
+    
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+    
+        .header-buttons a {
+            background-color: white;
+            color: #d32f2f;
+            border: 2px solid #d32f2f;
+            padding: 6px 12px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+    
+        .header-buttons a:hover {
+            background-color: #b71c1c;
+            color: white;
+        }
+    
+        .container {
+            max-width: 95%;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: 10px;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+        }
+    
+        h2 {
+            text-align: center;
+            color: #d32f2f;
+            font-size: 22px;
+        }
+    
+        .table-container {
+            overflow-x: auto;
+        }
+    
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            margin-top: 15px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+    
+        th, td {
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+            border-bottom: 1px solid #ddd;
+        }
+    
+        th {
+            background-color: #d32f2f;
+            color: white;
+        }
+    
+        .delete-btn {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+    
+        .delete-btn:hover {
+            background-color: #b71c1c;
+        }
+    
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+    
+            .header-buttons {
+                margin-top: 10px;
+            }
+    
+            .container {
+                padding: 10px;
+            }
+    
+            .table-container {
+                overflow-x: auto;
+                width: 100%;
+            }
+    
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+    
+            th, td {
+                font-size: 12px;
+                padding: 8px;
+            }
+    
+            .delete-btn {
+                padding: 5px 8px;
+                font-size: 10px;
+            }
+    
+            .status-dropdown {
+                font-size: 12px;
+                padding: 5px;
+            }
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🩸 Blood Requests</div>
+        <div class="header-buttons">
+            <a href="{% url 'dashboard' %}">⬅ Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Blood Requests</h2>
+        <div class="table-container">
+            {% if blood_request %}
+            <table>
+                <tr>
+                    <th>Patient Name</th>
+                    <th>Blood Group</th>
+                    <th>Units Needed</th>
+                    <th>Contact Number</th>
+                    <th>Hospital Name</th>
+                    <th>Reason</th>
+                    <th>Requested At</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                {% for request in blood_request %}
+                <tr>
+                    <td>{{ request.patient_name }}</td>
+                    <td>{{ request.blood_group }}</td>
+                    <td>{{ request.units_needed }}</td>
+                    <td>{{ request.contact_number }}</td>
+                    <td>{{ request.hospital_name }}</td>
+                    <td>{{ request.reason }}</td>
+                    <td>{{ request.requested_at }}</td>
+                    <td>
+                        {% if user.is_staff %}
+                            <select class="status-dropdown" data-id="{{ request.id }}">
+                                <option value="Pending" {% if request.status == "Pending" %}selected{% endif %}>Pending</option>
+                                <option value="Done" {% if request.status == "Done" %}selected{% endif %}>Done</option>
+                                <option value="Expired" {% if request.status == "Expired" %}selected{% endif %}>Expired</option>
+                            </select>
+                        {% else %}
+                            {{ request.status }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button class="update-btn" data-id="{{ request.id }}">✅ Update</button>
+                        <button class="delete-btn" data-id="{{ request.id }}">🗑 Delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <p class="no-requests">No blood requests found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".update-btn").forEach(button => {
+                button.addEventListener("click", function () {
+                    let requestId = this.getAttribute("data-id");
+                    let statusDropdown = document.querySelector(`.status-dropdown[data-id="${requestId}"]`);
+                    let newStatus = statusDropdown.value;
+                    let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+        
+                    fetch("{% url 'update_blood_request_status' %}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": csrfToken,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            id: requestId,
+                            status: newStatus
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire("Updated!", "Status has been updated successfully.", "success");
+                        } else {
+                            Swal.fire("Error!", data.error || "Failed to update status.", "error");
+                        }
+                    })
+                    .catch(error => console.error("Error:", error));
+                });
+            });
+        });        
+    </script>    
+</body>
+</html>

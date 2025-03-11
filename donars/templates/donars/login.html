@@ -65,6 +65,19 @@
             color: #d32f2f;
             margin-bottom: 10px;
         }
+        .back-button {
+            display: block;
+            margin-top: 15px;
+            padding: 8px 15px;
+            background-color: #555;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .back-button:hover {
+            background-color: #333;
+        }
     </style>
 </head>
 <body>
@@ -83,6 +96,7 @@
             <input type="password" name="password" placeholder="🔒 Password" required>
             <button type="submit">Login</button>
         </form>
+        <a href="{% url 'home' %}" class="back-button">Back to Home</a>
     </div>
     <script>
         // Show the error message if present

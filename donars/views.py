@@ -1,10 +1,43 @@
 from django.shortcuts import render,redirect,get_object_or_404
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
-from .models import Donor
-from .forms import DonorForm
-import csv
+from django.views.decorators.csrf import csrf_exempt
+from .models import Donor,BloodRequest
+from .forms import DonorForm,BloodRequestForm
+import csv,json
+
+
+def home(request):
+    return render(request, 'donars/home.html')  # New home page with donor registration & blood request
+
+def register_donor(request):
+    if request.method == "POST":
+        form = DonorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Thank you for registering as a donor!")
+            return redirect("register_donor")  # Redirects to refresh the page
+        else:
+            messages.error(request, "Please correct the errors in the form.")
+    else:
+        form = DonorForm()
+    
+    return render(request, "donars/register_donor.html", {"form": form})
+
+def blood_request(request):
+    if request.method == "POST":
+        form = BloodRequestForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your blood request has been submitted!")
+            return redirect('blood_request')  
+    else:
+        form = BloodRequestForm()
+
+    urgent_contact = "+91 9809931969" # Replace with actual contact
+    return render(request, 'donars/blood_request.html', {"form": form, "urgent_contact": urgent_contact})
 
 
 def login_view(request):
@@ -125,3 +158,38 @@ def delete_donor(request, donor_id):
     donor = get_object_or_404(Donor, id=donor_id)
     donor.delete()
     return redirect('donor_list', blood_group=donor.blood_group)
+
+
+@login_required
+def blood_request_list(request):
+    blood_request = BloodRequest.objects.all()
+    return render(request, 'donars/blood_request_list.html', {'blood_request': blood_request})
+
+@login_required
+def delete_blood_request(request,  id):
+    blood_request = get_object_or_404(BloodRequest, id=id)
+    blood_request.delete()
+    messages.success(request, "Blood request deleted successfully.")
+    return redirect('blood_request_list')
+
+
+@csrf_exempt
+@login_required
+def update_blood_request_status(request):
+    if request.method == "POST" and request.user.is_staff:
+        try:
+            data = json.loads(request.body)
+            request_id = data.get("id")
+            new_status = data.get("status")
+
+            blood_request = BloodRequest.objects.get(id=request_id)
+            blood_request.status = new_status
+            blood_request.save()
+            
+            return JsonResponse({"success": True})
+        except BloodRequest.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Request not found"})
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "Invalid JSON data"})
+
+    return JsonResponse({"success": False, "error": "Invalid request"})

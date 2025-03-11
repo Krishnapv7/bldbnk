@@ -1,0 +1,177 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Blood</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+        }
+
+        .header {
+            background-color: #d32f2f;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.5rem;
+        }
+
+        .back-button {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .title {
+            flex-grow: 1;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #b71c1c;
+        }
+
+        .urgent-contact {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #ffe8e8;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .header {
+                font-size: 1.2rem;
+                padding: 0.8rem;
+            }
+
+            .back-button {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        /* Form error messages */
+        .errorlist {
+            color: #dc3545;
+            margin: 0.5rem 0;
+            padding-left: 1rem;
+            list-style: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="/" class="back-button"><i class="fas fa-arrow-left"></i> Back</a>
+        <span class="title">Request Blood</span>
+        <span></span> <!-- Empty span for spacing -->
+    </header>
+
+    <div class="container">
+        {% if messages %}
+            <script>
+                {% for message in messages %}
+                    Swal.fire({
+                        title: "{{ message|escapejs }}",
+                        icon: "{{ message.tags }}",
+                        confirmButtonColor: '#d32f2f',
+                        width: '80%',
+                        backdrop: 'rgba(0,0,0,0.4)'
+                    }).then(() => {
+                        window.location.href = "{% url 'home' %}";
+                    });
+                {% endfor %}
+            </script>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <div class="errorlist">
+                    {{ field.errors }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="submit-btn">Submit Request</button>
+        </form>
+
+        <div class="urgent-contact">
+            <p>Urgent Blood Needed? Contact: <strong>{{ urgent_contact }}</strong></p>
+        </div>
+    </div>
+</body>
+</html>

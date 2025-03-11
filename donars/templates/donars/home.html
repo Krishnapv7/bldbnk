@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DYFI Blood Bank</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Global styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        /* Header */
+        header {
+            background-color: #d32f2f;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        header img.blood-drop {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        /* Logo below the header */
+        .logo-container {
+            margin: 30px 0;
+        }
+
+        .logo-container img {
+            width: 240px; /* Adjust size as needed */
+        }
+
+        /* Navigation buttons */
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-buttons a {
+            text-decoration: none;
+            color: white;
+            background-color: #d32f2f;
+            padding: 12px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            transition: 0.3s;
+            width: 250px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .nav-buttons a:hover {
+            background-color: white;
+            color: #d32f2f;
+            border: 2px solid #d32f2f;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #8b0000;
+            color: white;
+            padding: 5px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        🩸 DYFI Blood Bank
+    </header>
+
+    <!-- Logo below header -->
+    <div class="logo-container">
+        <img src="{% static 'images/dyfi.png' %}" alt="DYFI Logo">
+    </div>
+
+    <!-- Buttons -->
+    <div class="nav-buttons">
+        <a href="{% url 'login' %}">Admin Login</a>
+        <a href="{% url 'register_donor' %}">Register as Donor</a>
+        <a href="{% url 'blood_request' %}">Request Blood</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 DYFI Blood Bank. All rights reserved.</p>
+    </footer>
+</body>
+</html>
