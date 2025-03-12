@@ -160,6 +160,12 @@
     </style>
 </head>
 <body>
+    
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">🩸 DYFI Blood Bank</div>
+        <a href="{% url 'dashboard' %}" class="back-btn">⬅ Back to Dashboard</a>
+    </div>
     {% if messages %}
     <div class="message-container">
         {% for message in messages %}
@@ -170,12 +176,6 @@
         {% endfor %}
     </div>
     {% endif %}
-
-    <!-- Header -->
-    <div class="header">
-        <div class="logo">🩸 DYFI Blood Bank</div>
-        <a href="{% url 'dashboard' %}" class="back-btn">⬅ Back to Dashboard</a>
-    </div>
 
     <!-- Add Donor Form -->
     <div class="container">
@@ -209,5 +209,18 @@
             </form>
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(function () {
+                let messages = document.querySelector(".message-container");
+                if (messages) {
+                    messages.style.transition = "opacity 0.5s";
+                    messages.style.opacity = "0";
+                    setTimeout(() => messages.remove(), 500);
+                }
+            }, 3000); // Message disappears after 3 seconds
+        });
+    </script>
+</body>
 </body>
 </html>

@@ -238,6 +238,48 @@
                     .catch(error => console.error("Error:", error));
                 });
             });
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".delete-btn").forEach(button => {
+                button.addEventListener("click", function () {
+                    let requestId = this.getAttribute("data-id");
+                    let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+    
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "This action cannot be undone!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, delete it!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(`/delete-blood-request/${requestId}/`, {  
+                                method: "POST",
+                                headers: {
+                                    "X-CSRFToken": csrfToken,
+                                    "Content-Type": "application/json"
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire("Deleted!", "The blood request has been deleted.", "success").then(() => {
+                                        location.reload(); // Reload to reflect changes
+                                    });
+                                } else {
+                                    Swal.fire("Error!", data.error || "Failed to delete the request.", "error");
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error:", error);
+                                Swal.fire("Error!", "Something went wrong.", "error");
+                            });
+                        }
+                    });
+                });
+            });
         });        
     </script>    
 </body>

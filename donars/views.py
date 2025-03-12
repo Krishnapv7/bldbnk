@@ -166,11 +166,13 @@ def blood_request_list(request):
     return render(request, 'donars/blood_request_list.html', {'blood_request': blood_request})
 
 @login_required
-def delete_blood_request(request,  id):
-    blood_request = get_object_or_404(BloodRequest, id=id)
-    blood_request.delete()
-    messages.success(request, "Blood request deleted successfully.")
-    return redirect('blood_request_list')
+def delete_blood_request(request, id):
+    if request.method == "POST":
+        blood_request = get_object_or_404(BloodRequest, id=id)
+        blood_request.delete()
+        return JsonResponse({"success": True, "message": "Blood request deleted successfully."})
+
+    return JsonResponse({"success": False, "error": "Invalid request method."}, status=400)
 
 
 @csrf_exempt
